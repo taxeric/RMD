@@ -31,6 +31,8 @@ kotlin {
                 implementation ("com.google.code.gson:gson:2.9.0")
                 implementation ("com.squareup.okhttp3:okhttp:4.10.0")
                 implementation ("com.squareup.okhttp3:logging-interceptor:4.10.0")
+
+                implementation ("io.github.kuuuurt:multiplatform-paging:0.4.7")
             }
         }
         val jvmTest by getting
