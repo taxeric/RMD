@@ -3,8 +3,10 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import datasource.SpiritRemoteData
@@ -26,7 +28,7 @@ fun App() {
                 }, remoteData)
             }
             verticalDivider()
-            Column(modifier = Modifier.weight(7f)) {
+            Column(modifier = Modifier.weight(7f).padding(10.dp)) {
                 spiritDetailScreen(remoteData)
             }
         }

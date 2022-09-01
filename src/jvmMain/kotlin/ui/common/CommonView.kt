@@ -1,9 +1,6 @@
 package ui.common
 
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,4 +16,14 @@ fun verticalDivider(width: Dp = 1.dp, color: Color = Color.Gray){
 @Composable
 fun horizontalDivider(height: Dp = 1.dp, color: Color = Color.Gray){
     Divider(modifier = Modifier.height(height).fillMaxWidth(), color = color)
+}
+
+@Composable
+fun verticalSpacer(width: Dp = 10.dp) {
+    Spacer(modifier = Modifier.width(width))
+}
+
+@Composable
+fun horizontalSpacer(height: Dp = 10.dp) {
+    Spacer(modifier = Modifier.height(height))
 }
