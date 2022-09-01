@@ -7,6 +7,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import entity.SpiritEntity
 
 @Composable
 fun SpiritList(list: List<SpiritEntity>, onClick: (Int) -> Unit){

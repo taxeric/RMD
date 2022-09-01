@@ -1,3 +1,4 @@
+package entity
 data class SpiritList(
     val code: Int = 0,
     val msg: String = "",
