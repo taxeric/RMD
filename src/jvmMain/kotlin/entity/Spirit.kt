@@ -6,6 +6,12 @@ data class SpiritList(
     val total: Int = 0
 )
 
+data class SpiritDetailEntity(
+    val code: Int = 0,
+    val msg: String = "",
+    val data: SpiritEntity = SpiritEntity()
+)
+
 data class SpiritEntity(
     val avatar: String = "",
     val description: String = "",

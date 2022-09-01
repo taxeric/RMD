@@ -1,5 +1,7 @@
 package ui.common
 
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Divider
@@ -11,10 +13,10 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun verticalDivider(width: Dp = 1.dp, color: Color = Color.Gray){
-    Divider(modifier = Modifier.width(width), color = color)
+    Divider(modifier = Modifier.width(width).fillMaxHeight(), color = color)
 }
 
 @Composable
 fun horizontalDivider(height: Dp = 1.dp, color: Color = Color.Gray){
-    Divider(modifier = Modifier.height(height), color = color)
+    Divider(modifier = Modifier.height(height).fillMaxWidth(), color = color)
 }
