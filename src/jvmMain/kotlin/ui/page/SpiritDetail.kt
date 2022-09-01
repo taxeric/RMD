@@ -2,9 +2,13 @@ package ui.page
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -36,8 +40,20 @@ fun spiritDetailNet(id: Int, remoteData: SpiritRemoteData) {
 
 @Composable
 fun spiritDetailImpl(data: SpiritEntity) {
+    var name by remember {
+        mutableStateOf(data.name)
+    }
+    var hobby by remember {
+        mutableStateOf(data.hobby)
+    }
+    var desc by remember {
+        mutableStateOf(data.description)
+    }
     Column(modifier = Modifier.fillMaxSize()) {
-        Text(text = data.name)
+        Text(text = data.number)
+        OutlinedTextField(name, onValueChange = { name = it }, label = { Text("精灵名") })
+        OutlinedTextField(hobby, onValueChange = { hobby = it }, label = { Text("爱好") })
+        OutlinedTextField(desc, onValueChange = { desc = it }, label = { Text("简介") })
     }
 }
 
