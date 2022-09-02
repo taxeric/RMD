@@ -11,6 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers
@@ -102,6 +104,50 @@ fun ExternalImage(client: OkHttpClient, url: String, modifier: Modifier = Modifi
         else -> {
             imageBitmap?.let {
                 Image(it, contentDescription = content, modifier = modifier)
+            }
+        }
+    }
+}
+
+
+/**
+ * 流式布局,但奇怪的是子view的width一直是match_parent
+ */
+@Composable
+fun flowLayout(modifier: Modifier = Modifier, content: @Composable () -> Unit){
+    Layout(
+        modifier = modifier,
+        content = content
+    ) { measurables, constraints ->
+        var maxHeight = 0
+        var appendWidth = 0
+        val placeableView = mutableListOf<Placeable>()
+        measurables.forEachIndexed { index, measurable ->
+            val placeable = measurable.measure(constraints)
+            placeableView.add(placeable)
+            val childHeight = placeable.height
+            val childWidth = placeable.width
+            if (childWidth + appendWidth > constraints.maxWidth) {
+                maxHeight += childHeight
+                appendWidth = childWidth
+            } else {
+                appendWidth += childWidth
+            }
+            if (index == measurables.size - 1) {
+                maxHeight += childHeight
+            }
+        }
+
+        var layoutLeft = 0
+        var singleHeight = 0
+        layout(constraints.maxWidth, maxHeight) {
+            placeableView.forEachIndexed { index, childView ->
+                if (layoutLeft + childView.width > constraints.maxWidth) {
+                    singleHeight += childView.height
+                    layoutLeft = 0
+                }
+                childView.place(x = 0, y = 0)
+                layoutLeft += childView.width
             }
         }
     }

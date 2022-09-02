@@ -1,10 +1,9 @@
 package ui.page
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -20,13 +19,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import cache.LocalCache
+import datasource.SkillRemoteData
 import datasource.SpiritRemoteData
+import entity.Skill
 import entity.SpiritEntity
 import net.Net
-import ui.common.ExternalImage
-import ui.common.horizontalDivider
-import ui.common.horizontalSpacer
-import ui.common.verticalSpacer
+import ui.common.*
 
 @Composable
 fun spiritDetailScreen(remoteData: SpiritRemoteData) {
@@ -97,6 +97,8 @@ fun spiritDetailImpl(
     var speed by remember(data.number) {
         mutableStateOf(data.raceSpeed.toString())
     }
+    LocalCache.currentSpiritSkills.clear()
+    LocalCache.currentSpiritSkills.addAll(data.skills)
     Column(modifier = Modifier.fillMaxSize()) {
         Row(modifier = Modifier.height(64.dp).align(Alignment.End)) {
             TextButton(onClick = refresh) {
@@ -162,6 +164,38 @@ fun spiritDetailImpl(
                 OutlinedTextField(speed, onValueChange = { speed = it }, label = { Text("速度") }, modifier = Modifier
                     .width(100.dp))
             }
+            horizontalSpacer(5.dp)
+            appendSkillImpl(data.number, data.skills)
+        }
+    }
+}
+
+@Composable
+fun appendSkillImpl(number: String, skills: List<Skill>){
+    val remoteData by remember {
+        mutableStateOf(SkillRemoteData())
+    }
+    var addSkill by remember {
+        mutableStateOf(false)
+    }
+    Column {
+        Button(onClick = {
+            addSkill = true
+        }) {
+            Text("添加技能")
+        }
+        Column(modifier = Modifier.fillMaxWidth()) {
+            LocalCache.currentSpiritSkills.forEachIndexed { index, skill ->
+                Row(modifier = Modifier.padding(2.dp).fillMaxWidth()) {
+                    Text(skill.name, modifier = Modifier.weight(3f))
+                    Text(skill.description, modifier = Modifier.weight(7f), maxLines = 3)
+                }
+            }
+        }
+    }
+    if (addSkill) {
+        dialogForAppendSkill(remoteData) {
+            addSkill = false
         }
     }
 }
@@ -170,5 +204,32 @@ fun spiritDetailImpl(
 fun spiritEmptyData(){
     Column(modifier = Modifier.fillMaxSize()) {
         Text(text = "请选择精灵", textAlign = TextAlign.Center, fontWeight = FontWeight.Bold, modifier = Modifier.fillMaxSize())
+    }
+}
+
+@Composable
+fun dialogForAppendSkill(remoteData: SkillRemoteData, onDismiss: () -> Unit, ){
+    var keywords by remember {
+        mutableStateOf("")
+    }
+    Dialog(onCloseRequest = onDismiss, title = "skill") {
+        Column {
+            Row {
+                OutlinedTextField(keywords, onValueChange = {
+                    keywords = it
+                })
+            }
+            remoteData.skills.forEachIndexed { index, skill ->
+                TextButton(onClick = {
+                    LocalCache.addSkillData(skill)
+//                    onDismiss()
+                }, modifier = Modifier.padding(4.dp)){
+                    Text(skill.name)
+                }
+            }
+        }
+    }
+    LaunchedEffect(key1 = keywords) {
+        remoteData.searchByName(keywords)
     }
 }

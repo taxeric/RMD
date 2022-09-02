@@ -12,6 +12,13 @@ data class SpiritDetailEntity(
     val data: SpiritEntity = SpiritEntity()
 )
 
+data class SkillsList(
+    val code: Int = 0,
+    val msg: String = "",
+    val total: Int = 0,
+    val data: List<Skill> = emptyList()
+)
+
 data class SpiritEntity(
     val avatar: String = "",
     val description: String = "",
