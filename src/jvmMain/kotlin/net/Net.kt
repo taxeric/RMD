@@ -10,4 +10,7 @@ object Net {
     val defaultClient = OkHttpClient.Builder()
         .addInterceptor(PrintInterceptor())
         .build()
+
+    val defaultImageClient = OkHttpClient.Builder()
+        .build()
 }
