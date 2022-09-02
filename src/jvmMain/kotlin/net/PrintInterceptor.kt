@@ -32,7 +32,7 @@ class PrintInterceptor: Interceptor {
                 "请 求 头: $names = $name".log()
             }
         }
-        if ("POST" == request.method) {
+        if ("POST" == request.method || "PUT" == request.method) {
             if (request.body != null) {
                 val buffer = Buffer()
                 request.body!!.writeTo(buffer)

@@ -3,10 +3,7 @@ package ui.page
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -67,6 +64,12 @@ fun spiritDetailImpl(
     var name by remember(data.number) {
         mutableStateOf(data.name)
     }
+    var mainAttr by remember(data.number) {
+        mutableStateOf(data.primaryAttributes)
+    }
+    var secoAttr by remember(data.number) {
+        mutableStateOf(data.secondaryAttributes)
+    }
     var hobby by remember(data.number) {
         mutableStateOf(data.hobby)
     }
@@ -97,6 +100,12 @@ fun spiritDetailImpl(
     var speed by remember(data.number) {
         mutableStateOf(data.raceSpeed.toString())
     }
+    var m1drop by remember {
+        mutableStateOf(false)
+    }
+    var m2drop by remember {
+        mutableStateOf(false)
+    }
     LocalCache.currentSpiritSkills.clear()
     LocalCache.currentSpiritSkills.addAll(data.skills)
     Column(modifier = Modifier.fillMaxSize()) {
@@ -107,6 +116,7 @@ fun spiritDetailImpl(
             verticalSpacer()
             TextButton(onClick = {
                 val entity = data.copy(avatar = avatar, number = number, name = name, hobby = hobby, description = desc,
+                    primaryAttributes = mainAttr, secondaryAttributes = secoAttr,
                 height = height.toDouble(), weight = weight.toDouble(),
                 racePower = power.toInt(), raceAttack = attack.toInt(), raceDefense = defense.toInt(),
                 raceSpeed = speed.toInt(), raceMagicAttack = magicAttack.toInt(), raceMagicDefense = magicDefense.toInt())
@@ -128,6 +138,37 @@ fun spiritDetailImpl(
             OutlinedTextField(avatar, onValueChange = { avatar = it }, label = { Text("缩略图") })
             horizontalSpacer()
             OutlinedTextField(name, onValueChange = { name = it }, label = { Text("精灵名") })
+//            OutlinedTextField(mainAttr.name?:"", onValueChange = { mainAttr.name = it }, label = { Text("main") })
+            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Text(mainAttr.name?:"unknow", color = Color.Blue)
+                TextButton(onClick = { m1drop = true }){
+                    Text("变更主属性")
+                }
+                DropdownMenu(m1drop, onDismissRequest = { m1drop = false }) {
+                    LocalCache.attrsWithUnknow.forEachIndexed { index, spiritAttributes ->
+                        DropdownMenuItem(onClick = {
+                            m1drop = false
+                            mainAttr = mainAttr.copy(id = spiritAttributes.id, name = spiritAttributes.name)
+                        }) {
+                            Text(spiritAttributes.name!!)
+                        }
+                    }
+                }
+                Text(secoAttr.name?:"unknow", color = Color.Magenta)
+                TextButton(onClick = { m2drop = true }){
+                    Text("变更副属性")
+                }
+                DropdownMenu(m2drop, onDismissRequest = { m2drop = false }) {
+                    LocalCache.attrsWithUnknow.forEachIndexed { index, spiritAttributes ->
+                        DropdownMenuItem(onClick = {
+                            m2drop = false
+                            secoAttr = secoAttr.copy(id = spiritAttributes.id, name = spiritAttributes.name)
+                        }) {
+                            Text(spiritAttributes.name!!)
+                        }
+                    }
+                }
+            }
             horizontalSpacer(5.dp)
             OutlinedTextField(hobby, onValueChange = { hobby = it }, label = { Text("爱好") })
             horizontalSpacer(5.dp)

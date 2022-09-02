@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.MenuBar
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import datasource.SpiritRemoteData
 import ui.common.verticalDivider
+import ui.page.skillScreen
 import ui.page.spiritDetailScreen
 import ui.page.spiritScreen
 
@@ -36,7 +38,29 @@ fun App() {
 }
 
 fun main() = application {
+    var clickAddSkill by remember {
+        mutableStateOf(false)
+    }
     Window(onCloseRequest = ::exitApplication, title = "RMD") {
+        MenuBar {
+            Menu("other") {
+                Item("add skill") {
+                    clickAddSkill = true
+                }
+            }
+        }
         App()
+    }
+    if (clickAddSkill) {
+        windowAddSkill {
+            clickAddSkill = false
+        }
+    }
+}
+
+@Composable
+fun windowAddSkill(onDismiss: () -> Unit){
+    Window(onCloseRequest = onDismiss, title = "add skill"){
+        skillScreen()
     }
 }

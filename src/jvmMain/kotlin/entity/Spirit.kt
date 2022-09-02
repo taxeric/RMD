@@ -42,7 +42,7 @@ data class SpiritEntity(
 )
 
 data class Skill(
-    val additional_effects: String = "",
+    val additionalEffects: String = "",
     val amount: Int = 0,
     val attributes: SpiritAttributes = SpiritAttributes(),
     val description: String = "",
