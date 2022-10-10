@@ -5,7 +5,8 @@ Jetpack Compose编写的RocoGuide管理桌面端
 在PC端添加/修改精灵、技能
 
 ## 调试
-选中Main.kt后点击运行
+1. 修改[Constract](https://github.com/taxeric/RMD/blob/master/src/jvmMain/kotlin/Constract.kt)下的baseUrl
+2. 选中Main.kt后点击运行
 ![image.png](https://s2.loli.net/2022/10/10/XTYiOkuDbWLCcpn.png)
 
 ## 如何编译
