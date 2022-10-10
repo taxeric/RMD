@@ -23,6 +23,7 @@ import datasource.SpiritRemoteData
 import entity.Skill
 import entity.SpiritEntity
 import net.Net
+import net.NetResponse
 import ui.common.*
 
 @Composable
@@ -42,7 +43,7 @@ fun spiritDetailNet(id: Int, remoteData: SpiritRemoteData) {
         remoteData.getSpiritDataById(id)
     }
     if (entity.code == 200) {
-        spiritDetailImpl(entity.data)
+        spiritDetailImpl(data = entity.data, remoteData = remoteData)
     } else {
         Text(text = "出错了 ${entity.msg}")
     }
@@ -53,6 +54,7 @@ fun spiritDetailImpl(
     data: SpiritEntity = SpiritEntity(),
     isAdd: Boolean = false,
     refresh: () -> Unit = {},
+    remoteData: SpiritRemoteData,
     commit: (SpiritEntity) -> Unit = {}
 ) {
     var avatar by remember(data.number) {
@@ -106,21 +108,37 @@ fun spiritDetailImpl(
     var m2drop by remember {
         mutableStateOf(false)
     }
+    var commitData by remember {
+        mutableStateOf(false)
+    }
+    val scope = rememberCoroutineScope()
     LocalCache.currentSpiritSkills.clear()
     LocalCache.currentSpiritSkills.addAll(data.skills)
+    val responseStatus = remoteData.commitResult.collectAsState().value
+    var statusText by remember {
+        mutableStateOf("")
+    }
+    when (responseStatus.code) {
+        NetResponse.STATUS_IDLE -> {
+            statusText = ""
+        }
+        NetResponse.STATUS_LOADING -> {
+            statusText = "waiting..."
+        }
+        NetResponse.STATUS_COMPLETED -> {
+            statusText = if (responseStatus.success) "success" else "failed"
+            commitData = false
+        }
+    }
     Column(modifier = Modifier.fillMaxSize()) {
         Row(modifier = Modifier.height(64.dp).align(Alignment.End)) {
+            Text(text = statusText)
             TextButton(onClick = refresh) {
                 Text("refresh")
             }
             verticalSpacer()
             TextButton(onClick = {
-                val entity = data.copy(avatar = avatar, number = number, name = name, hobby = hobby, description = desc,
-                    primaryAttributes = mainAttr, secondaryAttributes = secoAttr,
-                height = height.toDouble(), weight = weight.toDouble(),
-                racePower = power.toInt(), raceAttack = attack.toInt(), raceDefense = defense.toInt(),
-                raceSpeed = speed.toInt(), raceMagicAttack = magicAttack.toInt(), raceMagicDefense = magicDefense.toInt())
-                commit(entity)
+                commitData = true
             }) {
                 Text("commit data")
             }
@@ -208,6 +226,16 @@ fun spiritDetailImpl(
             horizontalSpacer(5.dp)
             appendSkillImpl(data.number, data.skills)
         }
+    }
+    if (commitData) {
+        val entity = data.copy(
+            avatar = avatar, number = number, name = name, hobby = hobby, description = desc,
+            primaryAttributes = mainAttr, secondaryAttributes = secoAttr,
+            height = height.toDouble(), weight = weight.toDouble(),
+            racePower = power.toInt(), raceAttack = attack.toInt(), raceDefense = defense.toInt(),
+            raceSpeed = speed.toInt(), raceMagicAttack = magicAttack.toInt(), raceMagicDefense = magicDefense.toInt()
+        )
+        remoteData.commitSpirit(entity, scope)
     }
 }
 
